@@ -34,6 +34,9 @@ class CommandText(tk.Text):
         if cmd == '':
             self.data['time'] = 25
             self.data['message'] = 'No message'
+        elif cmd[0] == '#':
+            self.insert('end', '\n>>> ', ('prompt',))
+            return 'break'
         else:
             data = cmd.split(' ', maxsplit=1)
             self.data['time'] = data[0]
