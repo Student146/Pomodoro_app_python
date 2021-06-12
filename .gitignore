@@ -5,3 +5,5 @@ pomodoro-venv/
 .idea/
 
 .vscode/
+
+__pycache__

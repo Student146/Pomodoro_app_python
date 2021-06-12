@@ -12,7 +12,7 @@ def on_press(key):
     # Controller.alt_pressed
     if key == Key.alt_l:
         ALT_L_PRESSED = True
-    if key == KeyCode.from_char('p') and ALT_L_PRESSED:
+    if key == KeyCode.from_char('[') and ALT_L_PRESSED:
         if app.state() == 'normal':
             app.hide_window()   
         else:
