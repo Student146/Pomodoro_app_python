@@ -6,4 +6,4 @@ pomodoro-venv/
 
 .vscode/
 
-__pycache__
+pomodoro/__pycache__

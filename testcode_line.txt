@@ -1,0 +1,33 @@
+#KeyCode.from_char('[') and ALT_L_PRESSED:
+
+#app.after(1, lambda: app.focus_force())
+
+#app.focus_set()
+
+# else:
+        #     # app.wm_state('iconic')
+        #     # app.wm_state('normal')
+        #     # root.attributes('-topmost', True)
+        #     # app.focus_force()       
+        #     # app.cmd_text_get_focus()
+        #     # root.focus_force() #must type 2 times -> focus force
+        #     app.show_window()
+        #     app.cmd_text_get_focus()
+
+# if key == Key.esc:
+    #     # Stop listener
+    #     return False
+
+# self.attributes('-topmost', True)
+        # self.focus_force()
+        # self.wm_state('iconic')
+
+def on_release(key):  
+    global ALT_L_PRESSED
+    print('{0} release'.format(
+        key))
+    if key == Key.alt_l:
+        ALT_L_PRESSED = False
+    # if key == Key.esc:
+    #     # Stop listener
+    #     return False

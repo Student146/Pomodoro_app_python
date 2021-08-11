@@ -10,29 +10,6 @@ class StartWindow(tk.Frame):
 
         self.callbacks = callbacks
         # callbacks to application.py method
-
-        # the data should have in application.py
-
-        # self.widgets['input_time_label'] = tk.Label(self, text='When to notify: ')
-        # self.widgets['input_time_label'].grid(column=0, row=0)
-
-        # self.widgets['input_time_entry'] = tk.Entry(self, variable=tk.StringVar)
-        # self.widgets['input_time_entry'].grid(column=0, row=1)
-
-        # self.widgets['select_button'] = tk.Button(self, text='Select')
-        # self.widgets['select_button'].grid(column=1, row=1)
-
-        # self.widgets['1min_button'] = tk.Button(self, text='1 min')
-        # self.widgets['1min_button'].grid(column=0, row=2)
-
-        # self.widgets['5min_button'] = tk.Button(self, text='5 min')
-        # self.widgets['5min_button'].grid(column=1, row=2)
-
-        # self.widgets['message_label'] = tk.Label(self, text='Message: ')
-        # self.widgets['message_label'].grid(column=0, row=3)
-
-        # self.widgets['message_entry'] = tk.Entry(self, variable=tk.StringVar)
-        # self.widgets['message_entry'].grid(column=1, row=3)
         self.widgets['cmd_text'] = w.CommandText(self, self.callbacks)
         self.widgets['cmd_text'].grid(column=0, row=0)
         
@@ -56,6 +33,10 @@ class StartWindow(tk.Frame):
     def set_focus_cmd_text(self):
         self.widgets['cmd_text'].focus_set()
 
+    #this method is for testing only, now use focus_force for cmd_text
+    def force_focus_cmd_text(self):
+        self.widgets['cmd_text'].grab_set()
+
 
 class RunningWindow(tk.Frame):
     def __init__(self, parent, callbacks, *args, **kwargs):
@@ -64,7 +45,7 @@ class RunningWindow(tk.Frame):
         self.widgets = {}
         '''self.widgets = {'input_time': tk.Entry, ...}'''
         self.callbacks = callbacks
-        self.widgets['Running_label'] = tk.Label(self, text='Pomodoro is running')
+        self.widgets['Running_label'] = tk.Label(self, text='Pomodoro is running...')
         self.widgets['Running_label'].grid(row=0)
 
 
@@ -79,6 +60,7 @@ class NotifyWindow(tk.Frame):
         self.widgets['Snooze_button'].grid(row=0)
 
     def on_snooze(self):
+        """This method will silent the SoundManager and raise the StartWindow"""
         # will silent the SoundManager, raise the StartWindow
         self.callbacks['stop_music']()
         self.callbacks['raise_start_window']()

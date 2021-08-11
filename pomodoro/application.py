@@ -3,6 +3,7 @@ from . import views as v
 from . import widgets as w
 import datetime
 import time
+from .images import ICONFILE
 
 class Application(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -28,6 +29,13 @@ class Application(tk.Tk):
         self.callbacks['raise_start_window']()
         # Sound manager
         self.sound_manager = w.SoundManager()
+
+        # Icon for window
+        self.taskbar_icon = tk.PhotoImage(file=ICONFILE)
+        self.call('wm', 'iconphoto', self._w, self.taskbar_icon)
+
+        # Window title
+        self.title('Pomodoro')
 
     def raise_start_window(self):
         self.widgets['start_window'].tkraise()
@@ -72,8 +80,11 @@ class Application(tk.Tk):
         self.start_window.set_focus_cmd_text()
 
     def hide_window(self):
+        '''
+        Minimize the window to taskbar icon
+        '''
         # self.wm_state('iconic')
-        self.withdraw()
+        self.iconify()
 
     def show_window(self):
         # self.attributes('-topmost', True)
@@ -87,3 +98,13 @@ class Application(tk.Tk):
 
     def snooze_button_get_focus(self):
         self.notify_window.set_focus_snooze_button()
+
+    #this method is use to test, test if after deiconify, the application has
+    #focus or not, now it return ".", now I want to get focus to start_window
+    #if it return .!startwindow, it will very good
+    def focus_start_window(self):
+        self.start_window.focus_set()
+
+    def focus_cmd_text(self):
+        #self.start_window.set_focus_cmd_text()
+        self.start_window.set_focus_cmd_text()

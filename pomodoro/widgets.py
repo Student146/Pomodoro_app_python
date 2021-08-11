@@ -1,13 +1,17 @@
+from pomodoro import audios
 import tkinter as tk
+from tkinter import scrolledtext
 from pygame import mixer
 from threading import Thread
+from .audios import SOUNDFILE
 
 class SoundManager:
     """Create object to play, pause, adjust sound volume"""
     def __init__(self):
         mixer.init()
         self.sound_manager = mixer.Sound(
-            file='C://Users//ASUS//PycharmProjects//Pomodoro_app//pomodoro//audios//notification_iphong_ring.wav')
+            file=SOUNDFILE)
+        # file='C://Users//ASUS//PycharmProjects//Pomodoro_app//pomodoro//audios//notification_iphong_ring.wav')
         self.sound_manager.set_volume(0.25)  # set volume the first time
 
     def play(self):
@@ -19,7 +23,7 @@ class SoundManager:
     def set_volume(self, volume):
         self.sound_manager.set_volume(volume)
 
-class CommandText(tk.Text):
+class CommandText(scrolledtext.ScrolledText):
     def __init__(self, parent, callbacks, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.callbacks = callbacks
@@ -30,11 +34,12 @@ class CommandText(tk.Text):
         self.bind('<BackSpace>', self.on_delete)
 
     def on_return(self, *args):
+        """Binding event when press 'Enter'"""
         cmd = self.get('prompt.last', 'end').strip()
         if cmd == '':
             self.data['time'] = 25
             self.data['message'] = 'No message'
-        elif cmd[0] == '#':
+        elif not cmd[0].isdigit(): # this is to write comment when needed, e.g >>> watch anime for 20 mins 
             self.insert('end', '\n>>> ', ('prompt',))
             return 'break'
         else:
@@ -52,6 +57,7 @@ class CommandText(tk.Text):
         return 'break'
 
     def on_delete(self, *args):
+        """Binding event when press 'Backspace', not allow delete old data"""
         current_cursor_postion = self.index('prompt.last')
         current_cursor_postion_LINE = float(current_cursor_postion.split('.')[0])
         current_cursor_postion_CHAR = float(current_cursor_postion.split('.')[1])
