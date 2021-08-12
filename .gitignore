@@ -7,3 +7,9 @@ pomodoro-venv/
 .vscode/
 
 pomodoro/__pycache__
+
+.gitignore 
+
+testcode
+
+pomodoroscript.pyw
