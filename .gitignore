@@ -10,6 +10,6 @@ pomodoro/__pycache__
 
 .gitignore 
 
-testcode
+testcode/
 
 pomodoroscript.pyw
