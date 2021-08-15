@@ -6,7 +6,7 @@ import time
 from .images import ICONFILE
 
 class Application(tk.Tk):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, callbacks, focus_manager, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.callbacks = {'raise_start_window': self.raise_start_window,
                           'raise_running_window': self.raise_running_window,
@@ -16,14 +16,21 @@ class Application(tk.Tk):
                           'time_loop': self.time_loop,
                           'hide_window': self.hide_window,
                           'show_window': self.show_window}
+        # get callbacks from the main pomotest.py
+        # self.callbacks.update(callbacks)
+        self.focus_manager = focus_manager
         self.widgets = dict()
-        self.widgets['start_window'] = v.StartWindow(self, self.callbacks)
+        self.widgets['start_window'] = v.StartWindow(self,
+                                                    self.callbacks,
+                                                    focus_manager=self.focus_manager)
         self.widgets['start_window'].grid(row=0, padx=2, sticky='NSEW')
         self.start_window = self.widgets['start_window']
         self.widgets['running_window'] = v.RunningWindow(self, self.callbacks)
         self.widgets['running_window'].grid(row=0, padx=2, sticky='NSEW')
         self.running_window = self.widgets['running_window']
-        self.widgets['notify_window'] = v.NotifyWindow(self, self.callbacks)
+        self.widgets['notify_window'] = v.NotifyWindow(self,
+                                                       self.callbacks,
+                                                       focus_manager=self.focus_manager)
         self.widgets['notify_window'].grid(row=0, padx=2, sticky='NSEW')
         self.notify_window = self.widgets['notify_window']
         self.callbacks['raise_start_window']()
@@ -74,6 +81,7 @@ class Application(tk.Tk):
         while now < notify_time:
             time.sleep(1)
             now = datetime.datetime.now()
+        self.focus_manager.record_previous_focus()
         self.raise_notify_window()
         self.play_music()
         self.show_window()
@@ -91,7 +99,8 @@ class Application(tk.Tk):
         # self.attributes('-topmost', True)
         # self.focus_force()
         # self.wm_state('iconic')
-        self.wm_state('normal')
+        
+        # self.wm_state('normal')
         self.deiconify()
         self.after(1, lambda: self.focus_force())
         # self.focus_force()

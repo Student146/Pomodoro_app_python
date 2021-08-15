@@ -4,6 +4,8 @@ from tkinter import scrolledtext
 from pygame import mixer
 from threading import Thread
 from .audios import SOUNDFILE
+from win32gui import GetWindowText, GetForegroundWindow
+import win32gui
 
 class SoundManager:
     """Create object to play, pause, adjust sound volume"""
@@ -24,9 +26,10 @@ class SoundManager:
         self.sound_manager.set_volume(volume)
 
 class CommandText(scrolledtext.ScrolledText):
-    def __init__(self, parent, callbacks, *args, **kwargs):
+    def __init__(self, parent, callbacks, focus_manager, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.callbacks = callbacks
+        self.focus_manager = focus_manager
         self.data = {'time': 0, 'message': ''}
         self.tag_configure('prompt', foreground='black')
         self.insert('end', '>>> ', ('prompt',))
@@ -54,6 +57,7 @@ class CommandText(scrolledtext.ScrolledText):
         p1.start()
         # self.callbacks['time_loop']() # the problem lie in here, in the loop, should in separate thread
         self.callbacks['hide_window']()
+        self.focus_manager.return_focus()
         return 'break'
 
     def on_delete(self, *args):
@@ -73,6 +77,23 @@ class CommandText(scrolledtext.ScrolledText):
     def get_data(self):
         '''Return data in dictionary form {'time': 25, 'message': 'abc'}'''
         return self.data
+
+class FocusManager:
+    """Manage focus for app after using pomodoro
+    
+    Pomodoro steal focus therefore need to return after using"""
+    def __init__(self, *args, **kwargs):
+        self.prev_app_has_focus = None
+
+    def return_focus(self):
+        handle = win32gui.FindWindow(0, self.prev_app_has_focus)   
+        win32gui.SetForegroundWindow(handle)
+
+    def record_previous_focus(self):
+        """Record app has focus before pomodoro is used"""
+        self.prev_app_has_focus = GetWindowText(GetForegroundWindow())
+        print("previous app has focus: ", self.prev_app_has_focus)
+
 
 class ValidateMixin:
     """Provide validate function to widget"""
