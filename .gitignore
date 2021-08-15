@@ -13,3 +13,5 @@ pomodoro/__pycache__
 testcode/
 
 pomodoroscript.pyw
+
+__pycache__
