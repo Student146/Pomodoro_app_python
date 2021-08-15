@@ -38,15 +38,17 @@ class Application(tk.Tk):
         self.title('Pomodoro')
 
     def raise_start_window(self):
+        """Start window will raise over running_window and notify_window"""
         self.widgets['start_window'].tkraise()
         self.cmd_text_get_focus() # so can type immediately
 
     def raise_running_window(self):
+        """Running_window will raise over start_window and notify_window"""
         print('raise_running_window run')
         self.widgets['running_window'].tkraise()
-        print('guess here')
 
     def raise_notify_window(self):
+        """Notify_window will raise on top of Frame"""
         self.widgets['notify_window'].tkraise()
 
     def play_music(self):
@@ -55,13 +57,14 @@ class Application(tk.Tk):
     def stop_music(self):
         self.sound_manager.stop()
 
-    def get_data(self):
+    def get_data(self) -> dict:
+        """Get user input data in the form dict: {'message': 'abc', ...}"""
         return self.start_window.get_data()
 
     def time_loop(self):
-        '''Logic part of the object
+        """Logic part of the object
 
-           Check the time and notify'''
+           Check the time and notify"""
         now = datetime.datetime.now()
         self.raise_running_window()
         data = self.get_data()
@@ -80,9 +83,7 @@ class Application(tk.Tk):
         self.start_window.set_focus_cmd_text()
 
     def hide_window(self):
-        '''
-        Minimize the window to taskbar icon
-        '''
+        """Minimize the window to taskbar icon"""
         # self.wm_state('iconic')
         self.iconify()
 
@@ -97,6 +98,9 @@ class Application(tk.Tk):
         # self.focus_force()
 
     def snooze_button_get_focus(self):
+        """Will focus to the snooze_button in notify_window
+        
+        Get focus to quickly press by 'Spacebar'"""
         self.notify_window.set_focus_snooze_button()
 
     #this method is use to test, test if after deiconify, the application has

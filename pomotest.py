@@ -33,7 +33,6 @@ def on_press(key):
             keybd_event(alt_key, 0, extended_key | key_up, 0)
             print("focus is:", app.focus_get())
             
-            print("focus is:", app.focus_get())
             app.focus_cmd_text()
             print("focus is:", app.focus_get())
         else:
