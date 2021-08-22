@@ -3,17 +3,16 @@ from . import widgets as w
 
 class StartWindow(tk.Frame):
     """Start window has field to write time, button to choose time, field to write message"""
-    def __init__(self, parent, callbacks, focus_manager, *args, **kwargs):
+    def __init__(self, parent, callbacks, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.widgets = {}
         '''self.widgets = {'input_time': tk.Entry, ...}'''
 
         self.callbacks = callbacks
-        self.focus_manager = focus_manager
         # callbacks to application.py method
         self.widgets['cmd_text'] = w.CommandText(self,
-                                                 self.callbacks,
-                                                 focus_manager=self.focus_manager)
+                                                 self.callbacks
+                                                 )
         self.widgets['cmd_text'].grid(column=0, row=0)
         
 
@@ -34,11 +33,12 @@ class StartWindow(tk.Frame):
         return data
 
     def set_focus_cmd_text(self):
+        """Set focus to text widget using focus_set() method"""
         self.widgets['cmd_text'].focus_set()
 
     #this method is for testing only, now use focus_force for cmd_text
-    def force_focus_cmd_text(self):
-        self.widgets['cmd_text'].grab_set()
+    # def force_focus_cmd_text(self):
+    #     self.widgets['cmd_text'].grab_set()
 
 
 class RunningWindow(tk.Frame):
@@ -53,13 +53,12 @@ class RunningWindow(tk.Frame):
 
 
 class NotifyWindow(tk.Frame):
-    def __init__(self, parent, callbacks, focus_manager, *args, **kwargs):
+    def __init__(self, parent, callbacks, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.widgets = {}
         '''self.widgets = {'input_time': tk.Entry, ...}'''
 
         self.callbacks = callbacks
-        self.focus_manager = focus_manager
         self.widgets['Snooze_button'] = tk.Button(self, text='Snooze', command=self.on_snooze)
         self.widgets['Snooze_button'].grid(row=0)
 
@@ -71,4 +70,4 @@ class NotifyWindow(tk.Frame):
 
     def set_focus_snooze_button(self):
         self.widgets['Snooze_button'].focus_set()
-        self.widgets['Snooze_button'].focus_force()
+        # self.widgets['Snooze_button'].focus_force()

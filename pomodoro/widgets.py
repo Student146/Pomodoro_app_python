@@ -26,10 +26,9 @@ class SoundManager:
         self.sound_manager.set_volume(volume)
 
 class CommandText(scrolledtext.ScrolledText):
-    def __init__(self, parent, callbacks, focus_manager, *args, **kwargs):
+    def __init__(self, parent, callbacks, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.callbacks = callbacks
-        self.focus_manager = focus_manager
         self.data = {'time': 0, 'message': ''}
         self.tag_configure('prompt', foreground='black')
         self.insert('end', '>>> ', ('prompt',))
@@ -57,7 +56,7 @@ class CommandText(scrolledtext.ScrolledText):
         p1.start()
         # self.callbacks['time_loop']() # the problem lie in here, in the loop, should in separate thread
         self.callbacks['hide_window']()
-        self.focus_manager.return_focus()
+        self.callbacks['return_focus_to_previous_window']()
         return 'break'
 
     def on_delete(self, *args):
