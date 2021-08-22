@@ -1,5 +1,4 @@
 from pomodoro.application import Application
-from pynput.keyboard import Key, Listener, KeyCode, Controller
 from ctypes import windll
 
 # this line to make the window not blurr
