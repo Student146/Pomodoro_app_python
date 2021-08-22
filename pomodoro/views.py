@@ -33,12 +33,10 @@ class StartWindow(tk.Frame):
         return data
 
     def set_focus_cmd_text(self):
-        """Set focus to text widget using focus_set() method"""
+        """Set focus to text widget using focus_set() method
+        and scroll the text to current cursor position if the text too long"""
         self.widgets['cmd_text'].focus_set()
-
-    #this method is for testing only, now use focus_force for cmd_text
-    # def force_focus_cmd_text(self):
-    #     self.widgets['cmd_text'].grab_set()
+        self.widgets['cmd_text'].scroll_to_current_cursor()
 
 
 class RunningWindow(tk.Frame):

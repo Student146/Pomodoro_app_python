@@ -3,6 +3,7 @@ case 1: run app, click f9 -> hide [pass]
 case 2: run app, click f9 -> hide, click again -> pop + focus text [pass]
 case 3: run app first time, hide, focus other app, click f9 -> pop up + focus text [pass]
 case 4: when other app has focus, pomo still in text, f9 -> pop, f9 -> hide, return focus to app [pass]
+case 5: when open text has focus, click on chrome, then the pomo will be hide under chrome -> then click f9, hope raise to top but orange nhap nhay [fail]
 
 
 
@@ -115,3 +116,10 @@ GetWindowText(GetForegroundWindow()) => return the name of current window have f
 =============
 handle = win32gui.FindWindow(0, self.prev_app_has_focus)   
 win32gui.SetForegroundWindow(handle)
+
+============
+# added_time = datetime.timedelta(minutes=notify_in_min)
+# notify_time = now + added_time
+# while now < notify_time:
+#     time.sleep(1)
+#     now = datetime.datetime.now()

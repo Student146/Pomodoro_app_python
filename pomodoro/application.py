@@ -3,8 +3,8 @@ from . import views as v
 from . import widgets as w
 import datetime
 import time
-from .images import ICONFILE
-from pynput.keyboard import Key, Listener, KeyCode, Controller
+from .images import ICONFILE, TRAYICON_FILE_PATH
+from pynput.keyboard import Key, Listener
 from win32gui import GetWindowText, GetForegroundWindow, FindWindow, SetForegroundWindow
 from threading import Thread
 from PySimpleGUIQt import SystemTray
@@ -56,7 +56,7 @@ class Application(tk.Tk):
         self.title('Pomodoro')
 
         # Record for previous window has focus
-        self.current_focused_app_name = ''
+        self.current_focused_app_name = 'Pomodoro'
         self.previous_focused_window_name = 'Pomodoro'
 
         # Current window record
@@ -83,7 +83,11 @@ class Application(tk.Tk):
         print('Window state: ', self.state())
         print('Current has focus window name: ', GetWindowText(GetForegroundWindow()))
         if key == Key.f9:
+            self.current_focused_app_name = GetWindowText(GetForegroundWindow())
             if self.state() == 'iconic':
+                self.show_window()
+            elif self.state() == 'normal' and self.current_focused_app_name != 'Pomodoro':
+                self.hide_window()
                 self.show_window()
             else:
                 self.hide_window()
@@ -122,28 +126,25 @@ class Application(tk.Tk):
     def time_loop(self):
         """Logic part of the object
 
-           Check the time and notify"""
+           Check the time and notify
+           
+           This method is run by a separate thread in the background"""
         now = datetime.datetime.now()
 
         self.raise_running_window()
         self.current_window_in_root = 'running_window'
         tray = SystemTray(filename=self.SYSTEM_TRAY_ICON, tooltip='Pomodoro is running...')
-        #self.tray_icon_run()
 
         data = self.get_data()
         notify_in_min = float(data['time'])
-        # added_time = datetime.timedelta(minutes=notify_in_min)
-        # notify_time = now + added_time
-        # while now < notify_time:
-        #     time.sleep(1)
-        #     now = datetime.datetime.now()
         time.sleep(notify_in_min*60)
+
+        # When time is over
         self.raise_notify_window()
-        #self.tray_icon_stop()
         self.current_window_in_root = 'notify_window'
         self.play_music()
         self.show_window()
-        self.snooze_button_get_focus()
+        # self.snooze_button_get_focus()
 
     def cmd_text_get_focus(self):
         """Set focus to text widget to type immediately"""
@@ -152,10 +153,11 @@ class Application(tk.Tk):
     def hide_window(self):
         """Minimize the window to taskbar icon"""
         self.iconify()
-        self.return_focus_to_previous_window()
+        if self.previous_focused_window_name != 'Pomodoro':
+            self.return_focus_to_previous_window()
 
     def show_window(self):
-        """Restore window from taskbar icon -> window + get focus on the root window -> '.'"""
+        """Restore ROOT window from taskbar icon -> window + get focus on the root window -> '.'"""
         self.previous_focused_window_name = GetWindowText(GetForegroundWindow())
         if self.current_focused_app_name != 'Pomodoro':
             self.deiconify()
@@ -189,20 +191,19 @@ class Application(tk.Tk):
         SetForegroundWindow(handle)
 
     def running_window_get_focus(self):
-        #self.widgets['running_window'].focus_set()
         pass
 
-    def tray_icon_run_thread(self):
-        """Function to use Thread to display icon, because Icon.run() is not a thread, will stop the program"""
-        tray = SystemTray(filename=self.SYSTEM_TRAY_ICON)
-        while self.tray_icon_appeared:
-            pass 
+    # def tray_icon_run_thread(self):
+    #     """Function to use Thread to display icon, because Icon.run() is not a thread, will stop the program"""
+    #     tray = SystemTray(filename=self.SYSTEM_TRAY_ICON)
+    #     while self.tray_icon_appeared:
+    #         pass 
 
-    def tray_icon_run(self):
-        """Make tray icon display in a thread"""
-        tray_icon_thread = Thread(target=self.tray_icon_run_thread)
-        tray_icon_thread.start()
+    # def tray_icon_run(self):
+    #     """Make tray icon display in a thread"""
+    #     tray_icon_thread = Thread(target=self.tray_icon_run_thread)
+    #     tray_icon_thread.start()
 
-    def tray_icon_stop(self):
-        """Stop displaying the tray icon in taskbar"""
-        self.tray_icon_appeared = False
+    # def tray_icon_stop(self):
+    #     """Stop displaying the tray icon in taskbar"""
+    #     self.tray_icon_appeared = False
