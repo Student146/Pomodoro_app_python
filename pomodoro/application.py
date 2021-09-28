@@ -87,7 +87,8 @@ class Application(tk.Tk):
             if self.state() == 'iconic':
                 self.show_window()
             elif self.state() == 'normal' and self.current_focused_app_name != 'Pomodoro':
-                self.hide_window()
+                # this case when the pomo is behind the other window
+                self.iconify() # bad programming behaviour
                 self.show_window()
             else:
                 self.hide_window()
@@ -96,7 +97,40 @@ class Application(tk.Tk):
         """This method record key release of keyboard listener"""
         print('{0} released'.format(key))
         print()
+
+    def hide_window(self):
+        """Minimize the window to taskbar icon"""
+        self.iconify()
+        if self.previous_focused_window_name != 'Pomodoro':
+            self.return_focus_to_previous_window()
+
+    def show_window(self):
+        """Restore ROOT window from taskbar icon -> window + get focus on the root window -> '.'"""
+        self.set_previous_focused_window_name()
+        if self.current_focused_app_name != 'Pomodoro':
+            self.deiconify()
+            self.iconify()
+            self.deiconify()
+            self.window_manager[self.current_window_in_root]()
+        else:
+            self.deiconify()
+            self.window_manager[self.current_window_in_root]()
     
+    def return_focus_to_previous_window(self):
+        """When pomodoro run, will steal focus, eg, when we reading in chrome
+        we will record chrome and turn back focus to chrome after set alarm"""
+        handle = FindWindow(0, self.previous_focused_window_name)   
+        SetForegroundWindow(handle)
+
+    def set_current_focused_app_name(self):
+        """Current focused app name is used to check if pomo currently have focus
+        or not"""
+        self.current_focused_app_name = GetWindowText(GetForegroundWindow())
+
+    def set_previous_focused_window_name(self):
+        """Previous focused window name is the window have focus before
+        pomodoro steal focus, eg Chrome, Zim,..."""
+        self.previous_focused_window_name = GetWindowText(GetForegroundWindow())
 
     def raise_start_window(self):
         """Start window will raise over running_window and notify_window"""
@@ -150,24 +184,6 @@ class Application(tk.Tk):
         """Set focus to text widget to type immediately"""
         self.start_window.set_focus_cmd_text()
 
-    def hide_window(self):
-        """Minimize the window to taskbar icon"""
-        self.iconify()
-        if self.previous_focused_window_name != 'Pomodoro':
-            self.return_focus_to_previous_window()
-
-    def show_window(self):
-        """Restore ROOT window from taskbar icon -> window + get focus on the root window -> '.'"""
-        self.previous_focused_window_name = GetWindowText(GetForegroundWindow())
-        if self.current_focused_app_name != 'Pomodoro':
-            self.deiconify()
-            self.hide_window()
-            self.deiconify()
-            self.window_manager[self.current_window_in_root]()
-        else:
-            self.deiconify()
-            self.window_manager[self.current_window_in_root]()
-
     def snooze_button_get_focus(self):
         """Will focus to the snooze_button in notify_window
         
@@ -183,12 +199,6 @@ class Application(tk.Tk):
     def focus_cmd_text(self):
         #self.start_window.set_focus_cmd_text()
         self.start_window.set_focus_cmd_text()
-
-    def return_focus_to_previous_window(self):
-        """When pomodoro run, will steal focus, eg, when we reading in chrome
-        we will record chrome and turn back focus to chrome after set alarm"""
-        handle = FindWindow(0, self.previous_focused_window_name)   
-        SetForegroundWindow(handle)
 
     def running_window_get_focus(self):
         pass
